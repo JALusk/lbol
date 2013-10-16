@@ -7,7 +7,7 @@ coeff_BminusI = [-1.096, 3.038, -2.246, -0.497, 0.7078, 0.576, -0.713,
                  0.239, -0.027]
 
 # Bolometric correction
-def bc_color(color, coeff)
+def bc_color(color, coeff):
     """Calculates the bolometric correction, using the polynomial fits
        from Bersten & Hamuy (2009)
 
