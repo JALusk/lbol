@@ -1,4 +1,4 @@
-from math import log, exp, pi
+import math
 
 # Coefficients for polynomial fit to bolometric correction - color relation
 coeff_BminusV = [-0.823, 5.027, -13.409, 20.133, -18.096, 9.084, -1.950]
@@ -45,8 +45,6 @@ def calc_lbol(bolometric_corr, v_magnitude, extinction, distance_cm):
     """
     
     logL = -0.4 * (bolometric_corr + v_magnitude - extinction - 11.64) + \
-           math.log(4 * math.pi * distance_cm**(2))
+           math.log(4 * math.pi * distance_cm**(2), 10)
     
-    lbol = 10.0**(logL)
-
-    return lbol
+    return logL
