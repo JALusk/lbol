@@ -12,7 +12,7 @@ def bc_color(color, coeff):
        from Bersten & Hamuy (2009)
 
        Args:
-           color: array of B-V, V-I, or B-I colors at each observed epoch
+           color: B-V, V-I, or B-I color of the supernova
            coeff: polynomial fit coefficients corresponding to the chosen
                   color
        Returns:
@@ -45,6 +45,6 @@ def calc_lbol(bolometric_corr, v_magnitude, extinction, distance_cm):
     """
     
     logL = -0.4 * (bolometric_corr + v_magnitude - extinction - 11.64) + \
-           math.log(4 * math.pi * distance_cm**(2), 10)
+           math.log(4.0 * math.pi * distance_cm**(2), 10)
     
     return logL
