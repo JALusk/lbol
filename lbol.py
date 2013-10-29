@@ -44,7 +44,7 @@ def calc_lbol(bolometric_corr, v_magnitude, extinction, distance_cm):
            The value of the bolometric luminosity in ergs per second
     """
     
-    logL = -0.4 * (bolometric_corr + v_magnitude - extinction - 11.64) + \
+    logL = -0.4 * (bolometric_corr + v_magnitude - extinction + 11.64) + \
            math.log(4.0 * math.pi * distance_cm**(2), 10)
     
     return logL
