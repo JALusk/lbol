@@ -36,13 +36,13 @@ class bcColor():
         self.range_maximum = range_maximum
         self.result        = 0.0
 
-    def fit(self, coefficient_set):
-        for index in range(len(coefficient_set)):
-            add_term(calculate_term(index, coefficient_set[index]))
+    def calculate_polynomial_fit(self, coefficient_set):
+        for order in range(len(coefficient_set)):
+            add_term(calculate_term(order, coefficient_set[order]))
         return self.result
 
     def add_term(self, step):
       self.result += step
 
-    def calculate_term(self, index, coefficient):
-      return coefficient * self.color_value**(index)
+    def calculate_term(self, order, coefficient):
+      return coefficient * self.color_value**(order)

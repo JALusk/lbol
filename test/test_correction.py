@@ -13,11 +13,11 @@ class bcColor_TestCase(unittest.TestCase):
             self.range_maximum
         )
 
-    def test_derive_step(self):
-        index      = 2
-        coeff      = 0.37645654
-        expected   = 84.7027215
-        calculated = self.color.calculate_term(index, coeff)
+    def test_calculate_term(self):
+        order       = 2
+        coefficient = 0.37645654
+        expected    = 84.7027215
+        calculated  = self.color.calculate_term(order, coefficient)
         self.assertEqual(expected, calculated)
 
 if __name__ == '__main__':
