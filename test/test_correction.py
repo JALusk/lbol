@@ -1,25 +1,29 @@
 import unittest
-import lbol.correction as correction
+import lbol.bc_polynomial as bc_polynomial
+import lbol.constants as constants
 
-class bcColor_TestCase(unittest.TestCase):
-    def setUp(self):
-        self.color_value   = 15
-        self.range_minumum = 13
-        self.range_maximum = 42
+class TestBolometricCorrection(unittest.TestCase):
 
-        self.color = correction.bcColor(
-            self.color_value,
-            self.range_minumum,
-            self.range_maximum
-        )
+    def test_set_coefficients_to_BminusV(self):
+       expected = constants.coeff_BminusV
+       result = bc_polynomial.set_coefficients("BminusV")
+       self.assertEqual(expected, result)
+   
+    def test_set_coefficients_to_VminusI(self):
+       expected = constants.coeff_VminusI
+       result = bc_polynomial.set_coefficients("VminusI")
+       self.assertEqual(expected, result)
 
-    def test_calculate_term(self):
-        order       = 2
-        coefficient = 0.37645654
-        expected    = 84.7027215
-        calculated  = self.color.calculate_term(order, coefficient)
-        self.assertEqual(expected, calculated)
+    def test_set_coefficients_to_BminusI(self):
+       expected = constants.coeff_BminusI
+       result = bc_polynomial.set_coefficients("BminusI")
+       self.assertEqual(expected, result)
+
+    def test_set_coefficients_bad_argument_type(self):
+       self.assertRaises(TypeError, bc_polynomial.set_coefficients, 2)
+
+    def test_set_coefficients_bad_argument_value(self):
+        self.assertRaises(ValueError, bc_polynomial.set_coefficients, 'Hello')
 
 if __name__ == '__main__':
-    import BC_color_TestCase
     unittest.main()

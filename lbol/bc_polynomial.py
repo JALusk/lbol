@@ -1,3 +1,36 @@
+import constants
+
+def set_coefficients(color_type):
+    """Sets the coefficients of the polynomial fit to the proper list
+       based on what color the user is supplying
+
+       Args:
+           color_type: A string specifying the color combination. Must
+               be "BminusV" for B-V, "VminusI" for V-I, or "BminusI" for 
+               B-I.
+       
+       Returns:
+           A list containing the coefficients for the polynomial fit which
+           correspond to the supplied color, as given in Bersten & Hamuy
+           (2009)
+       
+       Raises:
+           TypeError: The argument given is not a string
+           ValueError: The argument given is not one of the three valid
+               strings.
+    """          
+    if color_type == "BminusV":
+        return constants.coeff_BminusV
+    elif color_type == "VminusI":
+        return constants.coeff_VminusI
+    elif color_type == "BminusI":
+        return constants.coeff_BminusI
+    elif type(color_type) != str:
+        raise TypeError
+    else:
+        raise ValueError
+
+
 def bc_color(color, coeff, range_min, range_max):
     """Calculates the bolometric correction, using the polynomial fits
        from Bersten & Hamuy (2009)
