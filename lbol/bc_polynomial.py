@@ -26,9 +26,9 @@ def set_coefficients(color_type):
     elif color_type == "BminusI":
         return constants.coeff_BminusI
     elif type(color_type) != str:
-        raise TypeError
+        raise TypeError("The argument given is not a string")
     else:
-        raise ValueError
+        raise ValueError("The argument given is not a valid color type")
 
 
 def bc_color(color, coeff, range_min, range_max):
