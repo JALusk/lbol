@@ -36,6 +36,13 @@ def set_constants(color_type):
     else:
         raise ValueError("The argument given is not a valid color")
 
+def validity_check(color_value, range_min, range_max):
+    if range_min <= color_value <= range_max:
+        return True
+    else:
+        return False
+    pass
+
 def bc_color(color, coeff, range_min, range_max):
     """Calculates the bolometric correction, using the polynomial fits
        from Bersten & Hamuy (2009)

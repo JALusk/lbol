@@ -2,7 +2,7 @@ import unittest
 import lbol.bc_polynomial as bc_polynomial
 import lbol.constants as constants
 
-class TestBolometricCorrection(unittest.TestCase):
+class TestSetConstants(unittest.TestCase):
 
     def test_set_coefficients_to_BminusV(self):
        expected = constants.coeff_BminusV
@@ -55,5 +55,23 @@ class TestBolometricCorrection(unittest.TestCase):
     def test_set_constants_bad_argument_value(self):
         self.assertRaises(ValueError, bc_polynomial.set_constants, 'Hello')
 
+class TestValidityCheck(unittest.TestCase):
+    
+    def test_color_in_valid_range(self):
+        color_value = 0.5
+        range_min = 0.0
+        range_max = 1.0
+        self.assertTrue(bc_polynomial.validity_check(color_value, \
+                                                     range_min, \
+                                                     range_max))
+
+    def test_color_not_in_valid_range(self):
+        color_value = 2.0
+        range_min = 0.0
+        range_max = 1.0
+        self.assertFalse(bc_polynomial.validity_check(color_value, \
+                                                      range_min,
+                                                      range_max))
+        
 if __name__ == '__main__':
     unittest.main()
