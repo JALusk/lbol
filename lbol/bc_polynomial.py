@@ -1,18 +1,21 @@
 import constants
 
-def set_coefficients(color_type):
-    """Sets the coefficients of the polynomial fit to the proper list
-       based on what color the user is supplying
-
+def set_constants(color_type):
+    """Sets the coefficients and valid range bounds based on what color
+       is being used to determine the bolometric correction.
+    
        Args:
            color_type: A string specifying the color combination. Must
                be "BminusV" for B-V, "VminusI" for V-I, or "BminusI" for 
                B-I.
        
        Returns:
-           A list containing the coefficients for the polynomial fit which
-           correspond to the supplied color, as given in Bersten & Hamuy
-           (2009)
+           A tuple containing the list of coefficients for the polynomial fit 
+           which correspond to the supplied color, the minimum value of the 
+           color for which the polynomial is valid, and the maximum value of 
+           the color for which the polynomial is valid
+
+           [coefficients], min, max
        
        Raises:
            TypeError: The argument given is not a string
@@ -20,16 +23,18 @@ def set_coefficients(color_type):
                strings.
     """          
     if color_type == "BminusV":
-        return constants.coeff_BminusV
+        return constants.coeff_BminusV, constants.min_BminusV, \
+               constants.max_BminusV
     elif color_type == "VminusI":
-        return constants.coeff_VminusI
+        return constants.coeff_VminusI, constants.min_VminusI, \
+               constants.max_VminusI
     elif color_type == "BminusI":
-        return constants.coeff_BminusI
+        return constants.coeff_BminusI, constants.min_BminusI, \
+               constants.max_BminusI
     elif type(color_type) != str:
         raise TypeError("The argument given is not a string")
     else:
-        raise ValueError("The argument given is not a valid color type")
-
+        raise ValueError("The argument given is not a valid color")
 
 def bc_color(color, coeff, range_min, range_max):
     """Calculates the bolometric correction, using the polynomial fits
