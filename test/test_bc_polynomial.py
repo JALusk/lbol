@@ -61,7 +61,7 @@ class TestValidityCheck(unittest.TestCase):
         color_value = 0.5
         range_min = 0.0
         range_max = 1.0
-        self.assertTrue(bc_polynomial.validity_check(color_value, \
+        self.assertTrue(bc_polynomial.valid_color(color_value, \
                                                      range_min, \
                                                      range_max))
 
@@ -69,9 +69,40 @@ class TestValidityCheck(unittest.TestCase):
         color_value = 2.0
         range_min = 0.0
         range_max = 1.0
-        self.assertFalse(bc_polynomial.validity_check(color_value, \
+        self.assertFalse(bc_polynomial.valid_color(color_value, \
                                                       range_min,
                                                       range_max))
+ 
+class TestCalculateTerm(unittest.TestCase):
+
+    def setUp(self):
+       self.color_value = 0.5
+       self.coefficient = 3.2
+
+    def test_calculate_term(self):
+        order = 5
+        expected = self.coefficient * self.color_value**(order)
+        result = bc_polynomial.calculate_term(self.coefficient, 
+                                              self.color_value, \
+                                              order)
+        self.assertEqual(expected, result)
+
+    def test_calculate_term_with_non_integer_order(self):
+        order = 3.2
+        self.assertRaises(TypeError, bc_polynomial.calculate_term,
+                          self.coefficient, self.color_value, order)
+
+class TestBolometricCorrection(unittest.TestCase):
+   
+    def setUp(self):
+        self.color_value = 0.422
+        self.color_type = "BminusV"
         
+    def test_bolometric_correction(self):
+        expected = -0.03984465224174367
+        result = bc_polynomial.calc_bolometric_correction(self.color_value, 
+                                                     self.color_type)
+        self.assertEqual(expected, result)
+
 if __name__ == '__main__':
     unittest.main()
