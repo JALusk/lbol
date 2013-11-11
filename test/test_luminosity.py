@@ -46,3 +46,6 @@ class TestLogLbol(unittest.TestCase):
         result = luminosity.calc_log_Lbol(color_value, self.color_type,
                                           self.v_magnitude, self.distance)
         self.assertEqual(expected, result)
+
+if __name__ == '__main__':
+    unittest.main()
