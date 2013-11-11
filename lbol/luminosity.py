@@ -35,10 +35,10 @@ def calc_log_Fbol(color_value, color_type, v_magnitude):
 
 def calc_log_4piDsquared(distance):
     """Calculates the log10 of 4*pi*D^2, the proportionality between
-       luminosity and flux. Distance is assumed to be in centimeters
+       luminosity and flux.
 
     Args:
-        distance: The distance to the supernova in centimeters
+        distance: The distance to the supernova
 
     Returns:
         The base-10 logarithm of 4*pi*D^2
