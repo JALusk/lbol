@@ -61,17 +61,17 @@ class TestValidityCheck(unittest.TestCase):
         color_value = 0.5
         range_min = 0.0
         range_max = 1.0
-        self.assertTrue(bc_polynomial.valid_color(color_value, \
-                                                     range_min, \
-                                                     range_max))
+        self.assertTrue(bc_polynomial.valid_color(color_value,
+                                                  range_min,
+                                                  range_max))
 
     def test_color_not_in_valid_range(self):
         color_value = 2.0
         range_min = 0.0
         range_max = 1.0
-        self.assertFalse(bc_polynomial.valid_color(color_value, \
-                                                      range_min,
-                                                      range_max))
+        self.assertFalse(bc_polynomial.valid_color(color_value,
+                                                   range_min,
+                                                   range_max))
  
 class TestCalculateTerm(unittest.TestCase):
 
@@ -83,7 +83,7 @@ class TestCalculateTerm(unittest.TestCase):
         order = 5
         expected = self.coefficient * self.color_value**(order)
         result = bc_polynomial.calculate_term(self.coefficient, 
-                                              self.color_value, \
+                                              self.color_value,
                                               order)
         self.assertEqual(expected, result)
 
@@ -101,7 +101,14 @@ class TestBolometricCorrection(unittest.TestCase):
     def test_bolometric_correction(self):
         expected = -0.03984465224174367
         result = bc_polynomial.calc_bolometric_correction(self.color_value, 
-                                                     self.color_type)
+                                                          self.color_type)
+        self.assertEqual(expected, result)
+
+    def test_bolometric_correction_bad_clor_value(self):
+        expected = None
+        bad_color_value = 128.54
+        result = bc_polynomial.calc_bolometric_correction(bad_color_value, 
+                                                          self.color_type)
         self.assertEqual(expected, result)
 
 if __name__ == '__main__':

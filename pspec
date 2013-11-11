@@ -9,7 +9,7 @@ if ! command -v python &>/dev/null; then
 fi
 
 if [ ! -d "${SPEC_DIRECTORY}" ]; then
-  echo "No test directory found locally, please ensure that there is a spec/ directory readable by this user"
+  echo "No test directory found locally, please ensure that there is a test/ directory readable by this user"
   exit 1
 fi
 

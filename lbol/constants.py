@@ -11,3 +11,6 @@ min_VminusI = -0.1
 max_VminusI = 1.0
 min_BminusI = -0.4
 max_BminusI = 3.0
+
+# Zeropoint for use in the calculation of bolometric magnitude
+mbol_zeropoint = 11.64
