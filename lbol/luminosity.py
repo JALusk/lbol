@@ -1,5 +1,5 @@
-from lbol.bc_polynomial import calc_bolometric_correction as bc
-import lbol.constants as constants
+from bc_polynomial import calc_bolometric_correction as bc
+import constants
 import math
 
 def calc_log_Fbol(color_value, color_type, v_magnitude):
