@@ -102,7 +102,7 @@ class TestBolometricCorrection(unittest.TestCase):
         expected = -0.03984465224174367
         result = bc_polynomial.calc_bolometric_correction(self.color_value, 
                                                           self.color_type)
-        self.assertEqual(expected, result)
+        self.assertAlmostEqual(expected, result)
 
     def test_bolometric_correction_bad_clor_value(self):
         expected = None
