@@ -24,7 +24,7 @@ In order to calculate a bolometric luminosity, simply import the `calc_log_Lbol`
 
 * The color of the supernova `[float]` (either B-V, V-I, or B-I)
 * A string signifying the color you are using `[string]` (either `"BminusV"`, `"VminusI"` or `"BminusI"`)
-* The apparent V-band magnitude, corrected for extinction `[float]'
+* The apparent V-band magnitude, corrected for extinction `[float]`
 * The distance to the supernova in cm `[float]`
 
 The funcion will return the base-10 logarithm of the bolometric luminosity.
