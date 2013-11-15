@@ -12,5 +12,10 @@ max_VminusI = 1.0
 min_BminusI = -0.4
 max_BminusI = 3.0
 
+# RMS errors in polynomial fits
+rms_err_BminusV = 0.113
+rms_err_VminusI = 0.109
+rms_err_BminusI = 0.901
+
 # Zeropoint for use in the calculation of bolometric magnitude
 mbol_zeropoint = 11.64
