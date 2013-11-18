@@ -1,4 +1,5 @@
 import constants
+import math
 
 def set_constants(color_type):
     """Sets the coefficients and valid range bounds based on what color
@@ -61,7 +62,44 @@ def calculate_derivative_term(coefficient, variable, order):
     else:
         return order * coefficient * variable**(order - 1)
 
-def calc_bolometric_correction(color_value, color_type):
+def quadrature_sum(x, y):
+    """Calculate the quadrature sum of two variables x and y
+    """
+    return math.sqrt(x**2 + y**2)
+
+def calc_bolometric_correction_err(color_value, color_err, color_type):
+    """Calculates the uncertainty in the bolometric correction
+
+       Two uncertainties are added in quadrature to get the total
+       uncertainty in the bolometric correction. The first is uncertainty
+       in the BC due to uncertainties in the measured color value (simple
+       error propagation using a derivative.) The second is the RMS error
+       inherent in the polynomial fit to the template data as reported in
+       Bersten & Hamuy (2009.)
+
+       Args:
+           color_value: B-V, V-I, or B-I color of the supernova in
+               magnitudes (corrected for reddening and extinction from
+               the host and MWG)
+           color_err: Uncertainty in the photometric color. This should
+               be the errors of b
+           color_type: String signifying which color color_value represents.
+
+   """
+    coefficients = set_constants(color_type)[0]
+    rms_err = set_constants(color_type)[3]
+    bc_derivative = 0.0
+    
+    for order in range(1,len(coefficients)):
+        bc_derivative += calculate_derivative_term(coefficients[order],
+                                                   color_value, order)
+  
+    bc_polynomial_err = abs(bc_derivative) * color_err
+    bolometric_correction_uncertainty = quadrature_sum(bc_polynomial_err, 
+                                                       rms_err)
+    return bolometric_correction_uncertainty
+
+def calc_bolometric_correction(color_value, color_err, color_type):
     """Calculates the bolometric correction, using the polynomial fits
        from Bersten & Hamuy (2009)
 
@@ -88,7 +126,11 @@ def calc_bolometric_correction(color_value, color_type):
         for order in range(len(coefficients)):
             bolometric_correction += calculate_term(coefficients[order],
                                                     color_value, order)
+        uncertainty = calc_bolometric_correction_err(color_value,
+                                                     color_err,
+                                                     color_type) 
     else:
         bolometric_correction = None
+        uncertainty = None
 
-    return bolometric_correction
+    return bolometric_correction, uncertainty

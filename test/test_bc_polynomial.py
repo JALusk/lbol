@@ -126,23 +126,48 @@ class TestCalculateDerivativeTerm(unittest.TestCase):
         self.assertRaises(TypeError, bc_polynomial.calculate_term,
                           self.coefficient, self.color_value, order)
 
+class TestQuadratureSum(unittest.TestCase):
+    
+    def test_quadrature_sum(self):
+        expected = 5.457105459856901
+        result = bc_polynomial.quadrature_sum(1.3, 5.3)
+        self.assertAlmostEqual(expected,result)
+
+class TestBolometricUncertainty(unittest.TestCase):
+    
+    def setUp(self):
+        self.color_value = 0.5
+        self.color_err = 0.04
+        self.color_type = "VminusI"
+
+    def test_bolometric_correction_err(self):
+        expected = 0.11229906678151871
+        result = bc_polynomial.calc_bolometric_correction_err(
+                                                   self.color_value,
+                                                   self.color_err,
+                                                   self.color_type)
+        self.assertAlmostEqual(expected, result)
+
 class TestBolometricCorrection(unittest.TestCase):
    
     def setUp(self):
         self.color_value = 0.422
+        self.color_err = 0.04
         self.color_type = "BminusV"
         
     def test_bolometric_correction(self):
         expected = -0.03984465224174367
-        result = bc_polynomial.calc_bolometric_correction(self.color_value, 
-                                                          self.color_type)
+        result = bc_polynomial.calc_bolometric_correction(self.color_value,
+                                                         self.color_err,
+                                                         self.color_type)[0]
         self.assertAlmostEqual(expected, result)
 
     def test_bolometric_correction_bad_clor_value(self):
         expected = None
         bad_color_value = 128.54
-        result = bc_polynomial.calc_bolometric_correction(bad_color_value, 
-                                                          self.color_type)
+        result = bc_polynomial.calc_bolometric_correction(bad_color_value,
+                                                         self.color_err,
+                                                         self.color_type)[0]
         self.assertEqual(expected, result)
 
 if __name__ == '__main__':

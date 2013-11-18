@@ -1,8 +1,9 @@
 from bc_polynomial import calc_bolometric_correction as bc
+from bc_polynomial import calc_bolometric_correction_err as bc_err
 import constants
 import math
 
-def calc_log_Fbol(color_value, color_type, v_magnitude):
+def calc_log_Fbol(color_value, color_err, color_type, v_magnitude):
     """Calculates the log10 of the bolometric flux of a Type II-P supernova.
 
     Args:
@@ -23,7 +24,7 @@ def calc_log_Fbol(color_value, color_type, v_magnitude):
         and color_type is None (which means the observed color is outside
         the range of validity of the polynomial fit.)
     """ 
-    bolometric_correction = bc(color_value, color_type)
+    bolometric_correction = bc(color_value, color_err, color_type)[0]
 
     if bolometric_correction == None:
         log_Fbol = None
@@ -47,7 +48,8 @@ def calc_log_4piDsquared(distance):
     
     return log_4piDsquared
 
-def calc_log_Lbol(color_value, color_type, v_magnitude, distance):
+def calc_log_Lbol(color_value, color_err, color_type, v_magnitude,  
+                  v_magnitude_err, distance, distance_err):
     """Calculates the bolometric luminosity of a Type II-P Supernova using
        the method of Bersten & Hamuy (2009)
 
@@ -71,12 +73,15 @@ def calc_log_Lbol(color_value, color_type, v_magnitude, distance):
         polynomial fit used to determine the bolometric correction.)
 
     """
-    log_Fbol = calc_log_Fbol(color_value, color_type, v_magnitude)
+    log_Fbol = calc_log_Fbol(color_value, color_err, color_type, 
+                             v_magnitude)
     log_4piDsquared = calc_log_4piDsquared(distance)
     
     if log_Fbol == None:
         log_Lbol = None
+        uncertainty = None
     else:
         log_Lbol = log_Fbol + log_4piDsquared
+        uncertainty = 0.0
 
-    return log_Lbol
+    return log_Lbol, uncertainty

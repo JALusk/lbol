@@ -9,21 +9,27 @@ class TestLogLbol(unittest.TestCase):
     
     def setUp(self):
         self.color_value = 0.5
+        self.color_err = 0.04
         self.color_type = "BminusV"
         self.v_magnitude = 16.59
+        self.v_magnitude_err = 0.02
         self.distance = 1.54E23
+        self.distance_err = 0.308E23
     
     def test_log_Fbol_calculation(self):
-        expected = -0.4 * (bc(self.color_value, self.color_type) 
+        expected = -0.4 * (bc(self.color_value, self.color_err,
+                              self.color_type)[0]
                           + self.v_magnitude + constants.mbol_zeropoint)
-        result = luminosity.calc_log_Fbol(self.color_value, self.color_type,
-                                         self.v_magnitude)
+        result = luminosity.calc_log_Fbol(self.color_value, self.color_err,
+                                          self.color_type,
+                                          self.v_magnitude)
         self.assertEqual(expected, result)
 
     def test_log_Fbol_is_None_if_bc_is_None(self):
         color_value = 123.0
         expected = None
-        result = luminosity.calc_log_Fbol(color_value, self.color_type,
+        result = luminosity.calc_log_Fbol(color_value, self.color_err, 
+                                          self.color_type,
                                           self.v_magnitude)
         self.assertEqual(expected, result)
 
@@ -33,18 +39,27 @@ class TestLogLbol(unittest.TestCase):
         self.assertEqual(expected, result)
 
     def test_log_Lbol(self):
-        expected = -0.4 * (bc(self.color_value, self.color_type) 
+        expected = -0.4 * (bc(self.color_value, self.color_err,
+                              self.color_type)[0]
                           + self.v_magnitude + constants.mbol_zeropoint) \
                    + math.log(4.0 * math.pi * self.distance**2.0, 10)
-        result = luminosity.calc_log_Lbol(self.color_value, self.color_type,
-                                          self.v_magnitude, self.distance)
+        result = luminosity.calc_log_Lbol(self.color_value, self.color_err,
+                                          self.color_type,
+                                          self.v_magnitude, 
+                                          self.v_magnitude_err,
+                                          self.distance,
+                                          self.distance_err)[0]
         self.assertEqual(expected, result)
     
     def test_log_Lbol_is_None_if_bc_is_None(self):
         color_value = 123.0
         expected = None
-        result = luminosity.calc_log_Lbol(color_value, self.color_type,
-                                          self.v_magnitude, self.distance)
+        result = luminosity.calc_log_Lbol(color_value, self.color_err,
+                                          self.color_type, 
+                                          self.v_magnitude, 
+                                          self.v_magnitude_err,
+                                          self.distance,
+                                          self.distance_err)[0]
         self.assertEqual(expected, result)
 
 if __name__ == '__main__':
