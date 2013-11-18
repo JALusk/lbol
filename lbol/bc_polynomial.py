@@ -53,6 +53,14 @@ def calculate_term(coefficient, variable, order):
     else:
         return coefficient * variable**(order)
 
+def calculate_derivative_term(coefficient, variable, order):
+    """Calculates a term in the derivative of a polynomial
+    """
+    if type(order) != int:
+        raise TypeError('Non-integer order in polynomial')
+    else:
+        return order * coefficient * variable**(order - 1)
+
 def calc_bolometric_correction(color_value, color_type):
     """Calculates the bolometric correction, using the polynomial fits
        from Bersten & Hamuy (2009)

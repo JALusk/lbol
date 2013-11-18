@@ -107,6 +107,25 @@ class TestCalculateTerm(unittest.TestCase):
         self.assertRaises(TypeError, bc_polynomial.calculate_term,
                           self.coefficient, self.color_value, order)
 
+class TestCalculateDerivativeTerm(unittest.TestCase):
+
+    def setUp(self):
+       self.color_value = 0.5
+       self.coefficient = 3.2
+
+    def test_calculate_derivative_term(self):
+        order = 5
+        expected = order * self.coefficient * self.color_value**(order - 1)
+        result = bc_polynomial.calculate_derivative_term(self.coefficient, 
+                                                         self.color_value,
+                                                         order)
+        self.assertEqual(expected, result)
+
+    def test_calculate_term_with_non_integer_order(self):
+        order = 3.2
+        self.assertRaises(TypeError, bc_polynomial.calculate_term,
+                          self.coefficient, self.color_value, order)
+
 class TestBolometricCorrection(unittest.TestCase):
    
     def setUp(self):
