@@ -49,6 +49,21 @@ class TestSetConstants(unittest.TestCase):
        result = bc_polynomial.set_constants("BminusI")[2]
        self.assertEqual(expected, result)
 
+    def test_set_uncertainties_to_BminusV(self):
+       expected = constants.rms_err_BminusV
+       result = bc_polynomial.set_constants("BminusV")[3]
+       self.assertEqual(expected, result)
+
+    def test_set_uncertainties_to_VminusI(self):
+       expected = constants.rms_err_VminusI
+       result = bc_polynomial.set_constants("VminusI")[3]
+       self.assertEqual(expected, result)
+
+    def test_set_uncertainties_to_BminusI(self):
+       expected = constants.rms_err_BminusI
+       result = bc_polynomial.set_constants("BminusI")[3]
+       self.assertEqual(expected, result)
+
     def test_set_constants_bad_argument_type(self):
        self.assertRaises(TypeError, bc_polynomial.set_constants, 2)
 
