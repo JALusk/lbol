@@ -20,24 +20,26 @@ The goal of this code is to provide an easy way to take photometric observations
 
 ## Basic Usage
 
-In order to calculate a bolometric luminosity, simply import the `calc_log_Lbol` function from the `luminosity` module. Then, call the function with four arguments:
+In order to calculate a bolometric luminosity, simply import the `calc_log_Lbol` function from the `luminosity` module. Then, call the function with the following arguments:
 
 * The color of the supernova `[float]` (either B-V, V-I, or B-I)
+* The uncertainty in the color measurement `[float]`
 * A string signifying the color you are using `[string]` (either `"BminusV"`, `"VminusI"` or `"BminusI"`)
 * The apparent V-band magnitude, corrected for extinction `[float]`
+* The uncertainty in the V-band magnitude `[float]`
 * The distance to the supernova in cm `[float]`
+* The uncertainty in the distance to the supernova `[float]`
 
-The funcion will return the base-10 logarithm of the bolometric luminosity.
+The funcion will return a tuple. The first element of the tuple is the base-10 logarithm of the bolometric luminosity. The second is the uncertainty in this value.
 
 Example:
 
     >>> from lbol.luminosity import calc_log_Lbol
-    >>> calc_log_Lbol(1.014295, "BminusV", 3.918, 1.523E23)
-    41.2553
+    >>> calc_log_Lbol(1.014295, 0.04, "BminusV", 3.918, 0.02, 1.604E23, 4.011E21)
+    (41.3003, 0.0575)
 
 (The numbers in the example above were taked from SN 1987A)
 
 ## Planned features
 
-Future releases will include the option to pass the observational error into the function. This will be combined with best estimates of the systematic errors in the luminosity calculation to output the log10 of the luminosity, and an error to go along with it.
-
+The directory structure needs to be improved so the package can be easily imported and used.
