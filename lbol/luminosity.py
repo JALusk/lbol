@@ -1,9 +1,10 @@
 from bc_polynomial import calc_bolometric_correction as bc
-from bc_polynomial import calc_bolometric_correction_err as bc_err
+import bc_polynomial
 import constants
 import math
 
-def calc_log_Fbol(color_value, color_err, color_type, v_magnitude):
+def calc_log_Fbol(color_value, color_err, color_type, v_magnitude,
+                  v_magnitude_err):
     """Calculates the log10 of the bolometric flux of a Type II-P supernova.
 
     Args:
@@ -24,17 +25,19 @@ def calc_log_Fbol(color_value, color_err, color_type, v_magnitude):
         and color_type is None (which means the observed color is outside
         the range of validity of the polynomial fit.)
     """ 
-    bolometric_correction = bc(color_value, color_err, color_type)[0]
+    bolometric_correction, bc_err = bc(color_value, color_err, color_type)
 
     if bolometric_correction == None:
         log_Fbol = None
+        log_Fbol_uncertainty = None
     else:
         log_Fbol = -0.4 * (bolometric_correction + v_magnitude
                        + constants.mbol_zeropoint)
+        log_Fbol_uncertainty = 0.4 * (bc_err + v_magnitude_err)
     
-    return log_Fbol
+    return log_Fbol, log_Fbol_uncertainty
 
-def calc_log_4piDsquared(distance):
+def calc_log_4piDsquared(distance, distance_err):
     """Calculates the log10 of 4*pi*D^2, the proportionality between
        luminosity and flux.
 
@@ -45,8 +48,10 @@ def calc_log_4piDsquared(distance):
         The base-10 logarithm of 4*pi*D^2
     """
     log_4piDsquared = math.log(4.0 * math.pi * distance**2.0, 10)
+    log_4piDsquared_uncertainty = 2.0 / (math.log(10) * distance) * \
+                                  distance_err
     
-    return log_4piDsquared
+    return log_4piDsquared, log_4piDsquared_uncertainty
 
 def calc_log_Lbol(color_value, color_err, color_type, v_magnitude,  
                   v_magnitude_err, distance, distance_err):
@@ -73,15 +78,18 @@ def calc_log_Lbol(color_value, color_err, color_type, v_magnitude,
         polynomial fit used to determine the bolometric correction.)
 
     """
-    log_Fbol = calc_log_Fbol(color_value, color_err, color_type, 
-                             v_magnitude)
-    log_4piDsquared = calc_log_4piDsquared(distance)
+    log_Fbol, log_Fbol_err = calc_log_Fbol(color_value, color_err, 
+                                           color_type, v_magnitude, 
+                                           v_magnitude_err)
+    log_4piDsquared, log_4piDsquared_err = calc_log_4piDsquared(distance, 
+                                                              distance_err)
     
     if log_Fbol == None:
         log_Lbol = None
-        uncertainty = None
+        log_Lbol_uncertainty = None
     else:
         log_Lbol = log_Fbol + log_4piDsquared
-        uncertainty = 0.0
+        log_Lbol_uncertainty = bc_polynomial.quadrature_sum(log_Fbol_err, 
+                                                      log_4piDsquared_err)
 
-    return log_Lbol, uncertainty
+    return log_Lbol, log_Lbol_uncertainty
