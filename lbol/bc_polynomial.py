@@ -13,10 +13,11 @@ def set_constants(color_type):
        Returns:
            A tuple containing the list of coefficients for the polynomial fit
            which correspond to the supplied color, the minimum value of the
-           color for which the polynomial is valid, and the maximum value of
-           the color for which the polynomial is valid
+           color for which the polynomial is valid, the maximum value of the 
+           color for which the polynomial is valid, and the rms error of the
+           polynomial fit for the supplied color.
 
-           [coefficients], min, max
+           ([coefficients], min, max, rms_error)
 
        Raises:
            TypeError: The argument given is not a string
@@ -81,8 +82,7 @@ def calc_bolometric_correction_err(color_value, color_err, color_type):
            color_value: B-V, V-I, or B-I color of the supernova in
                magnitudes (corrected for reddening and extinction from
                the host and MWG)
-           color_err: Uncertainty in the photometric color. This should
-               be the errors of b
+           color_err: Uncertainty in the photometric color.
            color_type: String signifying which color color_value represents.
 
    """
@@ -107,15 +107,19 @@ def calc_bolometric_correction(color_value, color_err, color_type):
            color_value: B-V, V-I, or B-I color of the supernova in
                magnitudes (corrected for reddening and extinction from
                the host and MWG)
+           color_err: Uncertainty in the photometric color.
            color_type: String signifying which color color_value represents.
                Valid values are "BminusV" for B-V, "VminusI" for V-I, and
                "BminusI" for B-I.
        Returns:
-           The bolometric correction for use in calculating the bolometric
-           luminosity of the supernova, if the color given is within the
-           valid range of the polynomial fit.
+           A tuple containing the bolometric correction for use in 
+           calculating the bolometric luminosity of the supernova, and the 
+           uncertainty in that bolometric correction (if the color given 
+           is within the valid range of the polynomial fit.)
 
-           None if the color is outside the valid range
+           (bolometric_correction, uncertainty)
+
+           (None, None) if the color is outside the valid range
     """
     bolometric_correction = 0.0
 
