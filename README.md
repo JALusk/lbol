@@ -1,6 +1,6 @@
 # Lbol
 
-Release: 2.0
+Release: 2.1
 
 Python package to calculate the bolometric luminosity of a Type II-P Supernova, as published by Bersten, M. C., & Hamuy, M. (2009)
 
