@@ -49,6 +49,18 @@ def valid_color(color_value, range_min, range_max):
 
 def calculate_polynomial_term(coefficient, variable, order):
     """Calculates a term in a polynomial
+
+    Args:
+        coefficient: FLOAT which is the coefficient to use in calculating
+            the polynomial term.
+        variable: FLOAT to plug in for the variable in the polynomial term.
+        order: INTEGER to use as the order of the polynomial term.
+
+    Returns:
+        FLOAT which is the result of coefficient * variable**(order)
+
+    Raises:
+        TypeError if a non-integer order is given
     """
     if type(order) != int:
         raise TypeError('Non-integer order in polynomial')
@@ -57,6 +69,14 @@ def calculate_polynomial_term(coefficient, variable, order):
 
 def calculate_polynomial(coefficients, variable):
     """Calculates a polynomial
+
+       Args:
+           coefficients: LIST of polynomial coefficients. The length
+               of the list will be used as the order of the polynomial.
+           variable: FLOAT to plug in for the variable in the polynomial.
+       Returns:
+           FLOAT, which is the result of summing the polynomial terms
+           calculated from the coefficients and variable given.
     """
     polynomial = 0.0
 
@@ -134,8 +154,7 @@ def calc_bolometric_correction(color_value, color_err, color_type):
     """
     bolometric_correction = 0.0
 
-    coefficients, range_min, range_max, rms_err = \
-                                              set_constants(color_type)
+    coefficients, range_min, range_max, rms_err = set_constants(color_type)
 
     if valid_color(color_value, range_min, range_max):
         bolometric_correction = calculate_polynomial(coefficients,
