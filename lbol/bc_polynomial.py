@@ -47,13 +47,24 @@ def valid_color(color_value, range_min, range_max):
     else:
         return False
 
-def calculate_term(coefficient, variable, order):
+def calculate_polynomial_term(coefficient, variable, order):
     """Calculates a term in a polynomial
     """
     if type(order) != int:
         raise TypeError('Non-integer order in polynomial')
     else:
         return coefficient * variable**(order)
+
+def calculate_polynomial(coefficients, variable):
+    """Calculates a polynomial
+    """
+    polynomial = 0.0
+
+    for order in range(len(coefficients)):
+        polynomial += calculate_polynomial_term(coefficients[order],
+                                                variable,
+                                                order)
+    return polynomial
 
 def calculate_derivative_term(coefficient, variable, order):
     """Calculates a term in the derivative of a polynomial
@@ -127,9 +138,8 @@ def calc_bolometric_correction(color_value, color_err, color_type):
                                               set_constants(color_type)
 
     if valid_color(color_value, range_min, range_max):
-        for order in range(len(coefficients)):
-            bolometric_correction += calculate_term(coefficients[order],
-                                                    color_value, order)
+        bolometric_correction = calculate_polynomial(coefficients,
+                                                    color_value)
         uncertainty = calc_bolometric_correction_err(color_value,
                                                      color_err,
                                                      color_type) 

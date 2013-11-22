@@ -88,23 +88,23 @@ class TestValidityCheck(unittest.TestCase):
                                                    range_min,
                                                    range_max))
  
-class TestCalculateTerm(unittest.TestCase):
+class TestCalculatePolynomialTerm(unittest.TestCase):
 
     def setUp(self):
        self.color_value = 0.5
        self.coefficient = 3.2
 
-    def test_calculate_term(self):
+    def test_calculate_polynomial_term(self):
         order = 5
         expected = self.coefficient * self.color_value**(order)
-        result = bc_polynomial.calculate_term(self.coefficient, 
-                                              self.color_value,
-                                              order)
-        self.assertEqual(expected, result)
+        result = bc_polynomial.calculate_polynomial_term(self.coefficient, 
+                                                         self.color_value,
+                                                         order)
+        self.assertAlmostEqual(expected, result)
 
-    def test_calculate_term_with_non_integer_order(self):
+    def test_calculate_polynomial_term_with_non_integer_order(self):
         order = 3.2
-        self.assertRaises(TypeError, bc_polynomial.calculate_term,
+        self.assertRaises(TypeError, bc_polynomial.calculate_polynomial_term,
                           self.coefficient, self.color_value, order)
 
 class TestCalculateDerivativeTerm(unittest.TestCase):
@@ -123,7 +123,7 @@ class TestCalculateDerivativeTerm(unittest.TestCase):
 
     def test_calculate_term_with_non_integer_order(self):
         order = 3.2
-        self.assertRaises(TypeError, bc_polynomial.calculate_term,
+        self.assertRaises(TypeError, bc_polynomial.calculate_derivative_term,
                           self.coefficient, self.color_value, order)
 
 class TestQuadratureSum(unittest.TestCase):
