@@ -107,6 +107,18 @@ class TestCalculatePolynomialTerm(unittest.TestCase):
         self.assertRaises(TypeError, bc_polynomial.calculate_polynomial_term,
                           self.coefficient, self.color_value, order)
 
+class TestCalculatePolynomial(unittest.TestCase):
+
+    def setUp(self):
+        self.coefficients = [1.2, 4.6, 2.5, 633.3, 34.3]
+        self.variable = 3.2
+    
+    def test_calculate_polynomial(self):
+        expected = 24390.110080000002
+        result = bc_polynomial.calculate_polynomial(self.coefficients,
+                                                    self.variable)
+        self.assertEqual(expected, result)
+
 class TestCalculateDerivativeTerm(unittest.TestCase):
 
     def setUp(self):
