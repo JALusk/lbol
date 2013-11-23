@@ -5,24 +5,23 @@ def set_constants(color_type):
     """Sets the coefficients and valid range bounds based on what color
        is being used to determine the bolometric correction.
 
-       Args:
-           color_type: A string specifying the color combination. Must
-               be "BminusV" for B-V, "VminusI" for V-I, or "BminusI" for
-               B-I.
+    Args:
+        color_type: A string specifying the color combination. Must be
+            "BminusV" for B-V, "VminusI" for V-I, or "BminusI" for B-I.
 
-       Returns:
-           A tuple containing the list of coefficients for the polynomial fit
-           which correspond to the supplied color, the minimum value of the
-           color for which the polynomial is valid, the maximum value of the 
-           color for which the polynomial is valid, and the rms error of the
-           polynomial fit for the supplied color.
+    Returns:
+        A tuple containing the list of coefficients for the polynomial 
+        fit which correspond to the supplied color, the minimum value of
+        the color for which the polynomial is valid, the maximum value 
+        of the color for which the polynomial is valid, and the rms
+        error of the polynomial fit for the supplied color.
 
-           ([coefficients], min, max, rms_error)
+        ([coefficients], min, max, rms_error)
 
-       Raises:
-           TypeError: The argument given is not a string
-           ValueError: The argument given is not one of the three valid
-               strings.
+    Raises:
+        TypeError: The argument given is not a string
+        ValueError: The argument given is not one of the three valid
+            strings.
     """
     if color_type == "BminusV":
         return constants.coeff_BminusV, constants.min_BminusV, \
@@ -39,8 +38,7 @@ def set_constants(color_type):
         raise ValueError("The argument given is not a valid color")
 
 def valid_color(color_value, range_min, range_max):
-    """Checks that the color_value is within the bounds set by range_min
-       and range_max. Returns True or False
+    """Checks that the color value is within the range of validity.
     """
     if range_min <= color_value <= range_max:
         return True
@@ -48,19 +46,20 @@ def valid_color(color_value, range_min, range_max):
         return False
 
 def calculate_polynomial_term(coefficient, variable, order):
-    """Calculates a term in a polynomial
+    """Calculates a term in a polynomial.
 
     Args:
-        coefficient: FLOAT which is the coefficient to use in calculating
-            the polynomial term.
-        variable: FLOAT to plug in for the variable in the polynomial term.
-        order: INTEGER to use as the order of the polynomial term.
+        coefficient: float which is the coefficient to use in
+            calculating the polynomial term.
+        variable: float to plug in for the variable in the polynomial
+            term.
+        order: integer to use as the order of the polynomial term.
 
     Returns:
-        FLOAT which is the result of coefficient * variable**(order)
+        foat which is the result of coefficient * variable**(order)
 
     Raises:
-        TypeError if a non-integer order is given
+        TypeError if a non-integer order is given.
     """
     if type(order) != int:
         raise TypeError('Non-integer order in polynomial')
@@ -68,15 +67,15 @@ def calculate_polynomial_term(coefficient, variable, order):
         return coefficient * variable**(order)
 
 def calculate_polynomial(coefficients, variable):
-    """Calculates a polynomial
+    """Calculates a polynomial.
 
-       Args:
-           coefficients: LIST of polynomial coefficients. The length
-               of the list will be used as the order of the polynomial.
-           variable: FLOAT to plug in for the variable in the polynomial.
-       Returns:
-           FLOAT, which is the result of summing the polynomial terms
-           calculated from the coefficients and variable given.
+    Args:
+        coefficients: list of polynomial coefficients. The length
+            of the list will be used as the order of the polynomial.
+        variable: float to plug in for the variable in the polynomial.
+    Returns:
+        float, which is the result of summing the polynomial terms
+        calculated from the coefficients and variable given.
     """
     polynomial = 0.0
 
@@ -87,7 +86,7 @@ def calculate_polynomial(coefficients, variable):
     return polynomial
 
 def calculate_derivative_term(coefficient, variable, order):
-    """Calculates a term in the derivative of a polynomial
+    """Calculates a term in the derivative of a polynomial.
     """
     if type(order) != int:
         raise TypeError('Non-integer order in polynomial')
@@ -95,27 +94,27 @@ def calculate_derivative_term(coefficient, variable, order):
         return order * coefficient * variable**(order - 1)
 
 def quadrature_sum(x, y):
-    """Calculate the quadrature sum of two variables x and y
+    """Calculate the quadrature sum of two variables x and y.
     """
     return math.sqrt(x**2 + y**2)
 
 def calc_bolometric_correction_err(color_value, color_err, color_type):
-    """Calculates the uncertainty in the bolometric correction
+    """Calculates the uncertainty in the bolometric correction.
 
-       Two uncertainties are added in quadrature to get the total
-       uncertainty in the bolometric correction. The first is uncertainty
-       in the BC due to uncertainties in the measured color value (simple
-       error propagation using a derivative.) The second is the RMS error
-       inherent in the polynomial fit to the template data as reported in
-       Bersten & Hamuy (2009.)
+    Two uncertainties are added in quadrature to get the total
+    uncertainty in the bolometric correction. The first is uncertainty
+    in the BC due to uncertainties in the measured color value (simple
+    error propagation using a derivative.) The second is the RMS error
+    inherent in the polynomial fit to the template data as reported in
+    Bersten & Hamuy (2009.)
 
-       Args:
-           color_value: B-V, V-I, or B-I color of the supernova in
-               magnitudes (corrected for reddening and extinction from
-               the host and MWG)
-           color_err: Uncertainty in the photometric color.
-           color_type: String signifying which color color_value represents.
-
+    Args:
+        color_value: B-V, V-I, or B-I color of the supernova in
+            magnitudes (corrected for reddening and extinction from
+            the host and MWG.)
+        color_err: Uncertainty in the photometric color.
+        color_type: String signifying which color color_value 
+            represents.
    """
     coefficients = set_constants(color_type)[0]
     rms_err = set_constants(color_type)[3]
@@ -131,26 +130,25 @@ def calc_bolometric_correction_err(color_value, color_err, color_type):
     return bolometric_correction_uncertainty
 
 def calc_bolometric_correction(color_value, color_err, color_type):
-    """Calculates the bolometric correction, using the polynomial fits
-       from Bersten & Hamuy (2009)
+    """Calculates the bolometric correction, using a polynomial fit.
 
-       Args:
-           color_value: B-V, V-I, or B-I color of the supernova in
-               magnitudes (corrected for reddening and extinction from
-               the host and MWG)
-           color_err: Uncertainty in the photometric color.
-           color_type: String signifying which color color_value represents.
-               Valid values are "BminusV" for B-V, "VminusI" for V-I, and
-               "BminusI" for B-I.
-       Returns:
-           A tuple containing the bolometric correction for use in 
-           calculating the bolometric luminosity of the supernova, and the 
-           uncertainty in that bolometric correction (if the color given 
-           is within the valid range of the polynomial fit.)
+    Args:
+        color_value: B-V, V-I, or B-I color of the supernova in
+            magnitudes (corrected for reddening and extinction from the
+            host and MWG.)
+        color_err: Uncertainty in the photometric color.
+        color_type: String signifying which color color_value represents.
+            Valid values are "BminusV" for B-V, "VminusI" for V-I, and
+            "BminusI" for B-I.
+    Returns:
+        A tuple containing the bolometric correction for use in 
+        calculating the bolometric luminosity of the supernova, and the
+        uncertainty in that bolometric correction (if the color given
+        is within the valid range of the polynomial fit.)
 
-           (bolometric_correction, uncertainty)
+        (bolometric_correction, uncertainty)
 
-           (None, None) if the color is outside the valid range
+        (None, None) if the color is outside the valid range.
     """
     bolometric_correction = 0.0
 
