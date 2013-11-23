@@ -156,7 +156,7 @@ def calc_bolometric_correction(color_value, color_err, color_type):
 
     if valid_color(color_value, range_min, range_max):
         bolometric_correction = calculate_polynomial(coefficients,
-                                                    color_value)
+                                                     color_value)
         uncertainty = calc_bolometric_correction_err(color_value,
                                                      color_err,
                                                      color_type) 
