@@ -10,9 +10,9 @@ def set_constants(color_type):
             "BminusV" for B-V, "VminusI" for V-I, or "BminusI" for B-I.
 
     Returns:
-        A tuple containing the list of coefficients for the polynomial 
+        A tuple containing the list of coefficients for the polynomial
         fit which correspond to the supplied color, the minimum value of
-        the color for which the polynomial is valid, the maximum value 
+        the color for which the polynomial is valid, the maximum value
         of the color for which the polynomial is valid, and the rms
         error of the polynomial fit for the supplied color.
 
@@ -73,6 +73,7 @@ def calculate_polynomial(coefficients, variable):
         coefficients: list of polynomial coefficients. The length
             of the list will be used as the order of the polynomial.
         variable: float to plug in for the variable in the polynomial.
+
     Returns:
         float, which is the result of summing the polynomial terms
         calculated from the coefficients and variable given.
@@ -113,19 +114,19 @@ def calc_bolometric_correction_err(color_value, color_err, color_type):
             magnitudes (corrected for reddening and extinction from
             the host and MWG.)
         color_err: Uncertainty in the photometric color.
-        color_type: String signifying which color color_value 
+        color_type: String signifying which color color_value
             represents.
    """
     coefficients = set_constants(color_type)[0]
     rms_err = set_constants(color_type)[3]
     bc_derivative = 0.0
-    
+ 
     for order in range(1,len(coefficients)):
         bc_derivative += calculate_derivative_term(coefficients[order],
                                                    color_value, order)
   
     bc_polynomial_err = abs(bc_derivative) * color_err
-    bolometric_correction_uncertainty = quadrature_sum(bc_polynomial_err, 
+    bolometric_correction_uncertainty = quadrature_sum(bc_polynomial_err,
                                                        rms_err)
     return bolometric_correction_uncertainty
 
@@ -140,6 +141,7 @@ def calc_bolometric_correction(color_value, color_err, color_type):
         color_type: String signifying which color color_value represents.
             Valid values are "BminusV" for B-V, "VminusI" for V-I, and
             "BminusI" for B-I.
+ 
     Returns:
         A tuple containing the bolometric correction for use in 
         calculating the bolometric luminosity of the supernova, and the
@@ -159,7 +161,7 @@ def calc_bolometric_correction(color_value, color_err, color_type):
                                                      color_value)
         uncertainty = calc_bolometric_correction_err(color_value,
                                                      color_err,
-                                                     color_type) 
+                                                     color_type)
     else:
         bolometric_correction = None
         uncertainty = None
