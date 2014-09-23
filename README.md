@@ -1,12 +1,12 @@
 # Lbol
 
-Release: 2.1
+Release: 2.2
 
 Python package to calculate the bolometric luminosity of a Type II-P Supernova, as published by Bersten, M. C., & Hamuy, M. (2009)
 
 ### Current Status
 
-This package has basic functionality. Given a B-V, V-I, or B-I color as well as a V magnitude and distance (in cm) it will calculate the base-10 logarithm of the bolometric luminosity. It now propagates uncertainties throughout the calculation, returning a tuple containing the log10(luminosity) and the uncertainty in this value. The directory structure needs to be cleaned up to make importing and using the luminosity module easier.
+This package has basic functionality. Given a B-V, V-I, or B-I color as well as a V magnitude and distance (in cm) it will calculate the base-10 logarithm of the bolometric luminosity. It now propagates uncertainties throughout the calculation, returning a tuple containing the log10(luminosity) and the uncertainty in this value. The directory structure needs to be cleaned up to make importing and using the luminosity module easier. As of Release 2.2, the code returns -999 on input which is outside the range of validity of the polynomial fits used to calculate a bolometric correction.
 
 ## Background
 
