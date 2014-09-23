@@ -27,15 +27,15 @@ def calc_log_Fbol(color_value, color_err, color_type, v_magnitude,
 
         (log_Fbol, uncertainty)
 
-        (None, None) if the bolometric correction calculated from the
-        color_value and color_type is None (which means the observed
+        (-999, -999) if the bolometric correction calculated from the
+        color_value and color_type is -999 (which means the observed
         color is outside the range of validity of the polynomial fit.)
     """ 
     bolometric_correction, bc_err = bc(color_value, color_err, color_type)
 
-    if bolometric_correction == None:
-        log_Fbol = None
-        log_Fbol_uncertainty = None
+    if bolometric_correction == -999:
+        log_Fbol = -999
+        log_Fbol_uncertainty = -999
     else:
         log_Fbol = -0.4 * (bolometric_correction + v_magnitude +
                            constants.mbol_zeropoint)
@@ -88,7 +88,7 @@ def calc_log_Lbol(color_value, color_err, color_type, v_magnitude,
 
         (log_Lbol, uncertainty)
 
-        (None, None) if the bolometric correction is None (which means 
+        (-999, -999) if the bolometric correction is -999 (which means 
         the observed color value is outside the range of vaidity of the
         polynomial fit used to determine the bolometric correction.)
     """
@@ -98,9 +98,9 @@ def calc_log_Lbol(color_value, color_err, color_type, v_magnitude,
     log_4piDsquared, log_4piDsquared_err = calc_log_4piDsquared(distance,
                                                               distance_err)
 
-    if log_Fbol == None:
-        log_Lbol = None
-        log_Lbol_uncertainty = None
+    if log_Fbol == -999:
+        log_Lbol = -999
+        log_Lbol_uncertainty = -999
     else:
         log_Lbol = log_Fbol + log_4piDsquared
         log_Lbol_uncertainty = bc_polynomial.quadrature_sum(log_Fbol_err,

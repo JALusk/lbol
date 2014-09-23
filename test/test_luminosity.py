@@ -35,18 +35,18 @@ class TestLogLbol(unittest.TestCase):
                                           self.v_magnitude_err)[1]
         self.assertAlmostEqual(expected, result)
 
-    def test_log_Fbol_is_None_if_bc_is_None(self):
+    def test_log_Fbol_is_bad_if_bc_is_bad(self):
         color_value = 123.0
-        expected = None
+        expected = -999
         result = luminosity.calc_log_Fbol(color_value, self.color_err, 
                                           self.color_type,
                                           self.v_magnitude,
                                           self.v_magnitude_err)[0]
         self.assertEqual(expected, result)
 
-    def test_log_Fbol_uncertainty_is_None_if_bc_is_None(self):
+    def test_log_Fbol_uncertainty_is_bad_if_bc_is_bad(self):
         color_value = 123.0
-        expected = None
+        expected = -999
         result = luminosity.calc_log_Fbol(color_value, self.color_err, 
                                           self.color_type,
                                           self.v_magnitude,
@@ -92,9 +92,9 @@ class TestLogLbol(unittest.TestCase):
                                           self.distance_err)[1]
         self.assertEqual(expected, result)
   
-    def test_log_Lbol_is_None_if_bc_is_None(self):
+    def test_log_Lbol_is_bad_if_bc_is_bad(self):
         color_value = 123.0
-        expected = None
+        expected = -999
         result = luminosity.calc_log_Lbol(color_value, self.color_err,
                                           self.color_type, 
                                           self.v_magnitude, 
@@ -103,9 +103,9 @@ class TestLogLbol(unittest.TestCase):
                                           self.distance_err)[0]
         self.assertEqual(expected, result)
 
-    def test_log_Lbol_uncertainty_is_None_if_bc_is_None(self):
+    def test_log_Lbol_uncertainty_is_bad_if_bc_is_bad(self):
         color_value = 123.0
-        expected = None
+        expected = -999
         result = luminosity.calc_log_Lbol(color_value, self.color_err,
                                           self.color_type, 
                                           self.v_magnitude, 

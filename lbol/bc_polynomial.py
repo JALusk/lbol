@@ -2,8 +2,7 @@ import constants
 import math
 
 def set_constants(color_type):
-    """Sets the coefficients and valid range bounds based on what color
-       is being used to determine the bolometric correction.
+    """Sets the coefficients, validty range, and rms error of fit.
 
     Args:
         color_type: A string specifying the color combination. Must be
@@ -39,7 +38,23 @@ def set_constants(color_type):
 
 def valid_color(color_value, range_min, range_max):
     """Checks that the color value is within the range of validity.
-    """
+
+    Each polynomial fit has a different range of validity. We need to
+    make sure that the color we are feeding in is inside that range.
+
+    Args:
+        color_value: B-V, V-I, or B-I color of the supernova in
+            magnitudes (corrected for reddening and extinction from the
+            host and MWG.)
+        range_min: Minumum value of the color range over which the fit
+            is valid
+        range_max: Maxumum value of the color range over which the fit
+            is valid
+
+    Returns:
+        True if the color value is within the valid range.
+        False if the volor value is outside the valid range.
+   """
     if range_min <= color_value <= range_max:
         return True
     else:
@@ -62,7 +77,7 @@ def calculate_polynomial_term(coefficient, variable, order):
         TypeError if a non-integer order is given.
     """
     if type(order) != int:
-        raise TypeError('Non-integer order in polynomial')
+        raise TypeError('Non-integer order in polynomial term')
     else:
         return coefficient * variable**(order)
 
@@ -84,15 +99,56 @@ def calculate_polynomial(coefficients, variable):
         polynomial += calculate_polynomial_term(coefficients[order],
                                                 variable,
                                                 order)
+
     return polynomial
 
-def calculate_derivative_term(coefficient, variable, order):
-    """Calculates a term in the derivative of a polynomial.
+def calculate_polynomial_derivative_term(coefficient, variable, order):
+    """Calculates the derivative of the nth order term of a polynomial.
+
+    Args:
+        coefficient: The coefficient of the nth order term in the
+            polynomial
+        variable: float to plug in for the variable in the polynomial
+        order: order of the nth order term in the polynomial (so, n.)
+
+    Returns:
+        float, which is the result of taking the derivative of the nth
+        order term a polynomial,
+
+        n * coefficient * variable**(n-1).
+
+        So, the edge case of taking the derivative of the zeroth-order
+        term is taken care of, since you explicity multiply by the
+        order of the polynomial (which is zero in the n = 0 case.)
+
+    Raises:
+        TypeError: if a non-integer was passed as the order.
     """
     if type(order) != int:
-        raise TypeError('Non-integer order in polynomial')
+        raise TypeError('Non-integer order in polynomial term')
     else:
         return order * coefficient * variable**(order - 1)
+
+def calculate_polynomial_derivative(coefficients, variable):
+    """Calculates the derivative of a polynomial.
+
+    Args:
+        coefficients: list of polynomial coefficients. The length
+            of the list will be used as the order of the polynomial.
+        variable: float to plug in for the variable in the polynomial.
+
+    Returns:
+        float, which is the result of summing the derivatives of
+        the polynomial terms calculated from the coefficients and 
+        variable given.
+    """
+    polynomial_derivative = 0.0
+
+    for order in range(len(coefficients)):
+        polynomial_derivative += calculate_polynomial_derivative_term(
+            coefficients[order], variable, order)
+ 
+    return polynomial_derivative
 
 def quadrature_sum(x, y):
     """Calculate the quadrature sum of two variables x and y.
@@ -119,15 +175,13 @@ def calc_bolometric_correction_err(color_value, color_err, color_type):
    """
     coefficients = set_constants(color_type)[0]
     rms_err = set_constants(color_type)[3]
-    bc_derivative = 0.0
- 
-    for order in range(1,len(coefficients)):
-        bc_derivative += calculate_derivative_term(coefficients[order],
-                                                   color_value, order)
-  
+    
+    bc_derivative = calculate_polynomial_derivative(coefficients,
+                                                     color_value) 
     bc_polynomial_err = abs(bc_derivative) * color_err
     bolometric_correction_uncertainty = quadrature_sum(bc_polynomial_err,
                                                        rms_err)
+
     return bolometric_correction_uncertainty
 
 def calc_bolometric_correction(color_value, color_err, color_type):
@@ -150,7 +204,7 @@ def calc_bolometric_correction(color_value, color_err, color_type):
 
         (bolometric_correction, uncertainty)
 
-        (None, None) if the color is outside the valid range.
+        (-999, -999) if the color is outside the valid range.
     """
     bolometric_correction = 0.0
 
@@ -160,10 +214,9 @@ def calc_bolometric_correction(color_value, color_err, color_type):
         bolometric_correction = calculate_polynomial(coefficients,
                                                      color_value)
         uncertainty = calc_bolometric_correction_err(color_value,
-                                                     color_err,
-                                                     color_type)
+                                                     color_err, color_type)
     else:
-        bolometric_correction = None
-        uncertainty = None
+        bolometric_correction = -999
+        uncertainty = -999
 
     return bolometric_correction, uncertainty

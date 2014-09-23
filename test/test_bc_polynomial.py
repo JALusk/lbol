@@ -125,18 +125,18 @@ class TestCalculateDerivativeTerm(unittest.TestCase):
        self.color_value = 0.5
        self.coefficient = 3.2
 
-    def test_calculate_derivative_term(self):
+    def test_calculate_polynomial_derivative_term(self):
         order = 5
         expected = order * self.coefficient * self.color_value**(order - 1)
-        result = bc_polynomial.calculate_derivative_term(self.coefficient, 
-                                                         self.color_value,
-                                                         order)
+        result = bc_polynomial.calculate_polynomial_derivative_term(
+            self.coefficient, self.color_value, order)
         self.assertEqual(expected, result)
 
     def test_calculate_term_with_non_integer_order(self):
         order = 3.2
-        self.assertRaises(TypeError, bc_polynomial.calculate_derivative_term,
-                          self.coefficient, self.color_value, order)
+        self.assertRaises(TypeError, 
+            bc_polynomial.calculate_polynomial_derivative_term,
+            self.coefficient, self.color_value, order)
 
 class TestQuadratureSum(unittest.TestCase):
     
@@ -175,7 +175,7 @@ class TestBolometricCorrection(unittest.TestCase):
         self.assertAlmostEqual(expected, result)
 
     def test_bolometric_correction_bad_clor_value(self):
-        expected = None
+        expected = -999
         bad_color_value = 128.54
         result = bc_polynomial.calc_bolometric_correction(bad_color_value,
                                                          self.color_err,
