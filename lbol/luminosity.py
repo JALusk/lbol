@@ -3,9 +3,9 @@ import bc_polynomial
 import constants
 import math
 
-def calc_log_Fbol(color_value, color_err, color_type, v_magnitude,
-                  v_magnitude_err):
-    """Calculates log10(bolometric flux) of a Type II-P supernova.
+def calc_Fbol(color_value, color_err, color_type, v_magnitude,
+              v_magnitude_err):
+    """Calculates the bolometric flux of a Type II-P supernova.
 
     Args:
         color_value: B-V, V-I, or B-I color of the supernova in 
@@ -21,11 +21,10 @@ def calc_log_Fbol(color_value, color_err, color_type, v_magnitude,
             correction for host + MWG extinction.
 
     Returns:
-        A tuple containing the base-10 logarithm of the bolometric flux
-        used when calculating the bolometric luminosity, and the
-        uncertainty in that number.
+        A tuple containing the bolometric flux used when calculating the
+        bolometric luminosity, and the uncertainty in that number.
 
-        (log_Fbol, uncertainty)
+        (Fbol, uncertainty)
 
         (-999, -999) if the bolometric correction calculated from the
         color_value and color_type is -999 (which means the observed
@@ -34,35 +33,34 @@ def calc_log_Fbol(color_value, color_err, color_type, v_magnitude,
     bolometric_correction, bc_err = bc(color_value, color_err, color_type)
 
     if bolometric_correction == -999:
-        log_Fbol = -999
-        log_Fbol_uncertainty = -999
+        Fbol = -999
+        Fbol_uncertainty = -999
     else:
-        log_Fbol = -0.4 * (bolometric_correction + v_magnitude +
-                           constants.mbol_zeropoint)
-        log_Fbol_uncertainty = 0.4 * (bc_err + v_magnitude_err)
+        Fbol = 10**(-0.4 * (bolometric_correction + v_magnitude +
+                            constants.mbol_zeropoint))
+        Fbol_uncertainty = (math.sqrt(2) * 0.4 * math.log(10) * Fbol * 
+                            math.sqrt(bc_err**2 + v_magnitude_err**2))
  
-    return log_Fbol, log_Fbol_uncertainty
+    return Fbol, Fbol_uncertainty
 
-def calc_log_4piDsquared(distance, distance_err):
-    """Calculates log10(4*pi*D^2), to convert flux to luminosity.
+def calc_4piDsquared(distance, distance_err):
+    """Calculates 4*pi*D^2, to convert flux to luminosity.
 
     Args:
         distance: The distance to the supernova.
         distance_err: The uncertainty in the distance to the supernova.
 
     Returns:
-        A tuple containing the base-10 logarithm of 4*pi*D^2, and the
-        luminosity of this number.
+        A tuple containing the 4*pi*D^2, and the uncertainty of this number.
 
-        (log_4piDsquared, uncertainty)
+        (4piDsquared, uncertainty)
     """
-    log_4piDsquared = math.log(4.0 * math.pi * distance**2.0, 10)
-    log_4piDsquared_uncertainty = (2.0 / (math.log(10) * distance) *
-                                   distance_err)
+    fourPiDsquared = 4.0 * math.pi * distance**2.0
+    fourPiDsquared_uncertainty = 8.0 * math.pi * distance * distance_err
  
-    return log_4piDsquared, log_4piDsquared_uncertainty
+    return fourPiDsquared, fourPiDsquared_uncertainty
 
-def calc_log_Lbol(color_value, color_err, color_type, v_magnitude,
+def calc_Lbol(color_value, color_err, color_type, v_magnitude,
                   v_magnitude_err, distance, distance_err):
     """Calculates the bolometric luminosity of a Type II-P Supernova.
 
@@ -82,28 +80,26 @@ def calc_log_Lbol(color_value, color_err, color_type, v_magnitude,
         distance_err: The uncertainty in the distance to the supernova.
  
     Returns:
-        A tuple containing the value of the base-10 logarithm of the 
-        bolometric luminosity in ergs per second, and the uncertainty
-        in that value.
+        A tuple containing the bolometric luminosity in ergs per second, 
+        and the uncertainty in that value.
 
-        (log_Lbol, uncertainty)
+        (Lbol, uncertainty)
 
         (-999, -999) if the bolometric correction is -999 (which means 
         the observed color value is outside the range of vaidity of the
         polynomial fit used to determine the bolometric correction.)
     """
-    log_Fbol, log_Fbol_err = calc_log_Fbol(color_value, color_err,
-                                           color_type, v_magnitude,
-                                           v_magnitude_err)
-    log_4piDsquared, log_4piDsquared_err = calc_log_4piDsquared(distance,
-                                                              distance_err)
+    Fbol, Fbol_err = calc_Fbol(color_value, color_err, color_type, 
+                               v_magnitude, v_magnitude_err)
+    fourPiDsquared, fourPiDsquared_err = calc_4piDsquared(distance,
+                                                          distance_err)
 
-    if log_Fbol == -999:
-        log_Lbol = -999
-        log_Lbol_uncertainty = -999
+    if Fbol == -999:
+        Lbol = -999
+        Lbol_uncertainty = -999
     else:
-        log_Lbol = log_Fbol + log_4piDsquared
-        log_Lbol_uncertainty = bc_polynomial.quadrature_sum(log_Fbol_err,
-                                                      log_4piDsquared_err)
+        Lbol = Fbol * fourPiDsquared
+        Lbol_uncertainty = bc_polynomial.quadrature_sum(fourPiDsquared * Fbol_err,
+                                                      Fbol * fourPiDsquared_err)
 
-    return log_Lbol, log_Lbol_uncertainty
+    return Lbol, Lbol_uncertainty
